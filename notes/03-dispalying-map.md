@@ -47,4 +47,39 @@ navigator.geolocation.getCurrentPosition(
 );
 ```
 
-[](./04-rendering-workout.md)
+### Displaying Marker
+
+| Method          | Description                                                                                                                                                    |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| AutoClose       | Set it to false if you want to override the default behavior of <br> the popup closing when another popup is opened.                                           |
+| closeOnClick    | Set it if you want to override the default behavior of the popup <br> closing when user clicks on the map. Defaults to the map's <br>closePopupOnClick option. |
+| className       | A custom CSS class name to assign to the popup.                                                                                                                |
+| setPopupContent | Sets the content of the popup bound to this layer.                                                                                                             |
+
+.on is leaflet method not JavaScript
+
+```js
+map.on('click', function (mapEvent) {
+  const { lat, lng } = mapEvent.latlng;
+
+  L.marker([lat, lng])
+    .addTo(map) //
+    .bindPopup(
+      L.popup({
+        maxWidth: 250,
+        minWidth: 100,
+        autoClose: false,
+        closeOnClick: false,
+        className: 'running-popup',
+      })
+    )
+    .setPopupContent(`Workout`)
+    .openPopup();
+});
+```
+
+[Next: Displaing Workout](./04-rendering-workout.md)
+
+```
+
+```

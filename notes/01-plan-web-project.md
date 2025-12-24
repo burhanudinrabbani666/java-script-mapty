@@ -34,3 +34,7 @@ Common Format: As a [type of user], I want [an action], so that [a benefit].
 ### Flowchart 📉
 
 ![mapty flowchart](../Mapty-flowchart.png)
+
+### Architecture
+
+[Next: Using Geolocation](./02-using-geolocation.md)

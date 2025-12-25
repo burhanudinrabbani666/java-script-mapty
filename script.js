@@ -11,6 +11,9 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+// Declare map, mapEvent for reusable
+let map, mapEvent;
+
 if (navigator.geolocation)
   navigator.geolocation.getCurrentPosition(
     function (position) {
@@ -21,7 +24,7 @@ if (navigator.geolocation)
       const coords = [latitude, longitude];
 
       // Shoulbe Have HTML with id map
-      const map = L.map('map').setView(coords, 13);
+      map = L.map('map').setView(coords, 13);
 
       L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution:
@@ -33,26 +36,49 @@ if (navigator.geolocation)
         .bindPopup('A pretty CSS popup.<br> Easily customizable.')
         .openPopup();
 
-      // Leaflet Library
-      map.on('click', function (mapEvent) {
-        const { lat, lng } = mapEvent.latlng;
+      // Leaflet Library --> Handling clicks on map
+      map.on('click', function (mapE) {
+        mapEvent = mapE;
 
-        L.marker([lat, lng])
-          .addTo(map) //
-          .bindPopup(
-            L.popup({
-              maxWidth: 250,
-              minWidth: 100,
-              autoClose: false,
-              closeOnClick: false,
-              className: 'running-popup',
-            })
-          )
-          .setPopupContent(`Workout`)
-          .openPopup();
+        // Manipuate DOM
+        form.classList.remove('hidden');
+        inputDistance.focus(); // Make Instanly in Distance Fields
       });
     },
     function () {
       alert('Could not get Your postion');
     }
   );
+
+form.addEventListener('submit', function (event) {
+  event.preventDefault();
+
+  // Clear Input value fields
+  inputDistance.value =
+    inputDuration.value =
+    inputCadence.value =
+    inputElevation.value =
+      '';
+
+  // Displaying Marker
+  const { lat, lng } = mapEvent.latlng;
+  L.marker([lat, lng])
+    .addTo(map) //
+    .bindPopup(
+      L.popup({
+        maxWidth: 250,
+        minWidth: 100,
+        autoClose: false,
+        closeOnClick: false,
+        className: 'running-popup',
+      })
+    )
+    .setPopupContent(`Workout`)
+    .openPopup();
+});
+
+// Change from elevation fields to cadance fields or backward
+inputType.addEventListener('change', function () {
+  inputElevation.closest('.form__row').classList.toggle('form__row--hidden');
+  inputCadence.closest('.form__row').classList.toggle('form__row--hidden');
+});

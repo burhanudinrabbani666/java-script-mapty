@@ -79,7 +79,3 @@ map.on('click', function (mapEvent) {
 ```
 
 [Next: Displaing Workout](./04-rendering-workout.md)
-
-```
-
-```

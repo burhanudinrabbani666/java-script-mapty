@@ -55,10 +55,6 @@ class Cycling extends Workout {
   }
 }
 
-const run1 = new Running([34, 12], 5.2, 24, 178);
-const cycling1 = new Cycling([34, 12], 27, 95, 523);
-
-console.log(run1, cycling1);
 /////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////
 
@@ -69,6 +65,7 @@ class App {
   #map;
   #mapEvent;
   #workout = [];
+  #route = [];
 
   constructor() {
     // Imidiatly run the code
@@ -92,9 +89,11 @@ class App {
     const { latitude } = position.coords;
     const { longitude } = position.coords;
 
+    console.log(position);
     const coords = [latitude, longitude];
 
-    console.log(this);
+    this.#route.push(coords);
+    console.log(this.#route);
     // Shoulbe Have HTML with id map
     this.#map = L.map('map').setView(coords, 13);
 
@@ -114,10 +113,8 @@ class App {
 
   _showForm(mapE) {
     this.#mapEvent = mapE;
-
-    // Manipuate DOM
     form.classList.remove('hidden');
-    inputDistance.focus(); // Make Instanly in Distance Fields
+    inputDistance.focus();
   }
 
   _toggleElevatioLoad() {
@@ -132,14 +129,13 @@ class App {
 
     event.preventDefault();
 
+    console.log(this);
     // Get data from form
     const type = inputType.value;
     const distance = +inputDistance.value;
     const duration = +inputDuration.value;
     const { lat, lng } = this.#mapEvent.latlng;
     let newWorkout;
-
-    console.log(distance);
 
     // if workout runnnig, createng running obeject
     if (type === 'running') {
@@ -178,11 +174,16 @@ class App {
 
     // add new object to workot array
     this.#workout.push(newWorkout);
-    console.log(newWorkout);
-    console.log(this.#workout);
+    this.#route.push([lat, lng]);
 
     // render workout on map as a marker
-    this.renderWorkoutMarker(newWorkout);
+    this._renderWorkoutMarker(newWorkout);
+
+    // render Line string
+    this._renderLineString();
+
+    // Render Workout List
+    this._renderWorkout(newWorkout);
 
     // Clear Input value fields
     inputDistance.value =
@@ -194,7 +195,7 @@ class App {
     // Displaying Marker
   }
 
-  renderWorkoutMarker(newWorkout) {
+  _renderWorkoutMarker(newWorkout) {
     console.log(newWorkout);
 
     L.marker([newWorkout.coords[0], newWorkout.coords[1]])
@@ -216,6 +217,20 @@ class App {
       )
       .openPopup();
   }
+
+  _renderLineString() {
+    const geojsonFeature = {
+      type: 'Feature',
+      geometry: {
+        type: 'LineString',
+        coordinates: this.#route.map(p => [p[1], p[0]]), // lng, lat
+      },
+    };
+
+    L.geoJSON(geojsonFeature).addTo(this.#map);
+  }
+
+  _renderWorkout(workout) {}
 }
 
 // initial Render

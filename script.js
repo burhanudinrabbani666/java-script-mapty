@@ -97,6 +97,11 @@ class App {
   constructor() {
     // Imidiatly run the code
     this._getPosition();
+
+    // Get Data from local Storage
+    this._getLocalStorage();
+
+    // Attach Event Handler
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevatioLoad); // change toggle
     containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
@@ -120,8 +125,6 @@ class App {
     const coords = [latitude, longitude];
 
     // Initial data for redering string
-    this.#route.push(coords);
-
     // Shoulbe Have HTML with id map
     this.#map = L.map('map').setView(coords, this.#zoomLevel);
 
@@ -137,6 +140,12 @@ class App {
 
     // Leaflet Library --> Handling clicks on map
     this.#map.on('click', this._showForm.bind(this));
+
+    // should be get #map first
+    this.#workout.forEach(work => {
+      this._renderWorkoutMarker(work);
+      this._renderLineString();
+    });
   }
 
   _showForm(mapE) {
@@ -170,7 +179,6 @@ class App {
 
     event.preventDefault();
 
-    console.log(this);
     // Get data from form
     const type = inputType.value;
     const distance = +inputDistance.value;
@@ -220,11 +228,12 @@ class App {
 
     // Clear Input value fields
     this._hideForm();
+
+    // Set Local Storage to all Workouts
+    this._setLocalStorage();
   }
 
   _renderWorkoutMarker(newWorkout) {
-    console.log(newWorkout);
-
     L.marker([newWorkout.coords[0], newWorkout.coords[1]])
       .addTo(this.#map) //
       .bindPopup(
@@ -249,16 +258,13 @@ class App {
       type: 'Feature',
       geometry: {
         type: 'LineString',
-        coordinates: this.#route.map(p => [p[1], p[0]]), // lng, lat
+        coordinates: this.#workout.map(p => [p.coords[1], p.coords[0]]), // lng, lat
       },
     };
-
     L.geoJSON(geojsonFeature).addTo(this.#map);
   }
 
   _renderWorkout(newWorkout) {
-    console.log(newWorkout.elevationGain, newWorkout.speed);
-
     let markup = ` <li class="workout workout--${newWorkout.type}" data-id="${
       newWorkout.id
     }">
@@ -315,7 +321,6 @@ class App {
 
   _moveToPopup(event) {
     const workoutElement = event.target.closest('.workout');
-    console.log(workoutElement);
 
     if (!workoutElement) return;
 
@@ -330,7 +335,28 @@ class App {
       },
     });
 
-    workout.click();
+    // workout.click();
+  }
+
+  _setLocalStorage() {
+    localStorage.setItem('workout', JSON.stringify(this.#workout));
+  }
+
+  _getLocalStorage() {
+    const data = JSON.parse(localStorage.getItem('workout'));
+
+    if (!data) return;
+
+    this.#workout = data;
+
+    this.#workout.forEach(work => {
+      this._renderWorkout(work);
+    });
+  }
+
+  reset() {
+    localStorage.removeItem('workout');
+    location.reload();
   }
 }
 

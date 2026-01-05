@@ -66,6 +66,36 @@ a:visited {
   width: 0;
 }
 
+.header__workout {
+  grid-column: span 5;
+}
+
+.header__workout-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.btn__container {
+  display: flex;
+  gap: 12px;
+}
+
+.btn__container button {
+  background: none;
+  border: none;
+  border-radius: 12px;
+
+  padding: 12px;
+
+  transition: all 0.4s;
+}
+
+.btn__container button:hover,
+.btn__container button:active {
+  background-color: #3d3d3d;
+}
+
 .workout {
   background-color: var(--color-dark--2);
   border-radius: 5px;

@@ -115,7 +115,6 @@ class App {
     // Imidiatly run the code
     this._getPosition();
 
-    console.log(this.#workout);
     // Get Data from local Storage
     this._getLocalStorage();
 
@@ -132,23 +131,31 @@ class App {
       }
 
       if (editElement) {
-        // console.log('hello');
-        this._edit(event);
+        this._editWorkout(event);
+      }
+
+      if (deleteElement) {
+        this._deleteWorkout(event);
       }
     });
   }
 
-  _edit(event) {
+  _editWorkout(event) {
     const workoutEl = event.target.closest('.workout');
     const workoutId = workoutEl.dataset.id;
     this.#idEdit = workoutId;
 
     const workout = this.#workout.find(workout => workout.id === workoutId);
 
-    console.log(workout);
-    console.log(this.#idEdit);
-
     form.classList.remove('hidden');
+    inputDistance.value =
+      inputDuration.value =
+      inputCadence.value =
+      inputElevation.value =
+        '';
+
+    inputDuration.value = workout.duration;
+    inputDistance.value = workout.distance;
 
     if (workout.type === 'running') {
       inputElevation.closest('.form__row').classList.add('form__row--hidden');
@@ -167,6 +174,16 @@ class App {
       inputType.value = workout.type;
       inputElevation.value = workout.elevationGain;
     }
+  }
+
+  _deleteWorkout() {
+    const workoutEl = event.target.closest('.workout');
+    const workoutId = workoutEl.dataset.id;
+
+    this.#workout = this.#workout.filter(workout => workout.id !== workoutId);
+    this._setLocalStorage();
+
+    location.reload();
   }
 
   _getPosition() {
@@ -398,9 +415,16 @@ class App {
     let markup = ` <li class="workout workout--${newWorkout.type}" data-id="${
       newWorkout.id
     }">
+
+          <div class="header__workout">
+          <div class="header__workout-item">
           <h2 class="workout__title">${newWorkout.description}</h2>
-          <button class="btn-edit">Edit</button>
-          <button class="btn-delete">Delete</button>
+          <div class="btn__container">
+          <button class="btn-edit">✏️</button>
+          <button class="btn-delete">🗑️</button>                    
+          </div>          
+          </div>
+          </div>
           <div class="workout__details">
             <span class="workout__icon">${
               newWorkout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'

@@ -95,6 +95,7 @@ class App {
   #workout = [];
   #route = [];
   #zoomLevel = 13;
+  #idEdit;
 
   constructor() {
     // Imidiatly run the code
@@ -123,10 +124,12 @@ class App {
   _edit(event) {
     const workoutEl = event.target.closest('.workout');
     const workoutId = workoutEl.dataset.id;
+    this.#idEdit = workoutId;
 
     const workout = this.#workout.find(workout => workout.id === workoutId);
 
     console.log(workout);
+    console.log(this.#idEdit);
 
     // form.classList.remove('hidden');
   }

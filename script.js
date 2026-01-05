@@ -2,12 +2,14 @@
 
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
+
 const inputType = document.querySelector('.form__input--type');
 const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+// edit button
 class Workout {
   id = (Date.now() + '').slice(-10);
   date = new Date();
@@ -104,7 +106,29 @@ class App {
     // Attach Event Handler
     form.addEventListener('submit', this._newWorkout.bind(this));
     inputType.addEventListener('change', this._toggleElevatioLoad); // change toggle
-    containerWorkouts.addEventListener('click', this._moveToPopup.bind(this));
+    containerWorkouts.addEventListener('click', event => {
+      const editElement = event.target.closest(`.btn-edit`);
+      const deleteElement = event.target.closest(`.btn-delete`);
+      if (!editElement && !deleteElement) {
+        this._moveToPopup(event);
+      }
+
+      if (editElement) {
+        // console.log('hello');
+        this._edit(event);
+      }
+    });
+  }
+
+  _edit(event) {
+    const workoutEl = event.target.closest('.workout');
+    const workoutId = workoutEl.dataset.id;
+
+    const workout = this.#workout.find(workout => workout.id === workoutId);
+
+    console.log(workout);
+
+    // form.classList.remove('hidden');
   }
 
   _getPosition() {
@@ -178,7 +202,6 @@ class App {
     const allPositive = (...inputs) => inputs.every(inp => inp > 0);
 
     event.preventDefault();
-
     // Get data from form
     const type = inputType.value;
     const distance = +inputDistance.value;
@@ -269,6 +292,8 @@ class App {
       newWorkout.id
     }">
           <h2 class="workout__title">${newWorkout.description}</h2>
+          <button class="btn-edit">Edit</button>
+          <button class="btn-delete">Delete</button>
           <div class="workout__details">
             <span class="workout__icon">${
               newWorkout.type === 'running' ? '🏃‍♂️' : '🚴‍♀️'

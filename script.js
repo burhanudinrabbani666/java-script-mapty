@@ -101,6 +101,7 @@ class App {
     // Imidiatly run the code
     this._getPosition();
 
+    console.log(this.#workout);
     // Get Data from local Storage
     this._getLocalStorage();
 
@@ -306,6 +307,7 @@ class App {
           return alert('Inputs have to be positive number');
 
         newWorkout.cadence = cadence;
+        newWorkout.pace = duration / distance;
       }
 
       if (type === 'cycling') {
@@ -318,13 +320,26 @@ class App {
           return alert('Inputs have to be positive number');
 
         newWorkout.elevationGain = elevation;
+        newWorkout.speed = (distance / duration) * 60;
       }
+      console.log(newWorkout);
 
       // New Workour data
       const editedWorkout = {
         ...workout,
         ...newWorkout,
       };
+
+      console.log(editedWorkout);
+      // Hide form
+      this._hideForm();
+
+      this.#workout = this.#workout.map(workout =>
+        workout.id === editedWorkout.id ? editedWorkout : workout
+      );
+
+      console.log(this.#workout);
+      this._setLocalStorage();
     }
   }
 

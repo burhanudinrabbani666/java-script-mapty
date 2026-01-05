@@ -1,4 +1,18 @@
 'use strict';
+const months = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
@@ -295,6 +309,9 @@ class App {
         type,
         distance,
         duration,
+        description: `${type.replace(type[0], type[0].toUpperCase())} on ${
+          months[new Date().getMonth()]
+        } ${new Date().getDate()}`,
       };
 
       if (type === 'running') {
@@ -322,6 +339,7 @@ class App {
         newWorkout.elevationGain = elevation;
         newWorkout.speed = (distance / duration) * 60;
       }
+
       console.log(newWorkout);
 
       // New Workour data
@@ -340,6 +358,8 @@ class App {
 
       console.log(this.#workout);
       this._setLocalStorage();
+
+      window.location.reload();
     }
   }
 

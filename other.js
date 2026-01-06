@@ -1,1 +1,0 @@
-const jonas = 'Jonas';

@@ -1,18 +1,7 @@
 'use strict';
-const months = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
+
+import { bani, Running, Cycling } from './src/js/model.js';
+import { months } from './src/js/cofig.js';
 
 const form = document.querySelector('.form');
 const containerWorkouts = document.querySelector('.workouts');
@@ -22,85 +11,6 @@ const inputDistance = document.querySelector('.form__input--distance');
 const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
-
-// edit button
-class Workout {
-  id = (Date.now() + '').slice(-10);
-  date = new Date();
-  clicks = 0;
-
-  constructor(coords, distance, duration) {
-    this.coords = coords;
-    this.distance = distance; // in km/h
-    this.duration = duration; // in min
-  }
-
-  _setDescription() {
-    const months = [
-      'January',
-      'February',
-      'March',
-      'April',
-      'May',
-      'June',
-      'July',
-      'August',
-      'September',
-      'October',
-      'November',
-      'December',
-    ];
-
-    this.description = `${this.type.replace(
-      this.type[0],
-      this.type[0].toUpperCase()
-    )} on ${months[this.date.getMonth()]} ${this.date.getDate()}`;
-  }
-
-  click() {
-    this.clicks += 1;
-  }
-}
-
-class Running extends Workout {
-  type = 'running';
-
-  constructor(coords, distance, duration, cadence) {
-    super(coords, distance, duration);
-    this.cadence = cadence;
-    this.calcPace();
-    this._setDescription();
-  }
-
-  calcPace() {
-    // min/km
-
-    this.pace = this.duration / this.distance;
-    return this.pace;
-  }
-}
-class Cycling extends Workout {
-  type = 'cycling';
-
-  constructor(coords, distance, duration, elevationGain) {
-    super(coords, distance, duration);
-    this.elevationGain = elevationGain;
-    this.calcSpeed();
-    this._setDescription();
-  }
-
-  calcSpeed() {
-    // km/h
-
-    this.speed = (this.distance / this.duration) * 60;
-    return this.speed;
-  }
-}
-
-/////////////////////////////////////////////////////////////////////
-/////////////////////////////////////////////////////////////////////
-
-// ----------- Application Architecture -------------//
 
 class App {
   // Private Class Fields
@@ -138,6 +48,8 @@ class App {
         this._deleteWorkout(event);
       }
     });
+
+    console.log(bani);
   }
 
   _editWorkout(event) {
@@ -147,7 +59,7 @@ class App {
 
     const workout = this.#workout.find(workout => workout.id === workoutId);
 
-    form.classList.remove('hidden');
+    form.classList.toggle('hidden');
     inputDistance.value =
       inputDuration.value =
       inputCadence.value =

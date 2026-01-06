@@ -248,3 +248,24 @@ a:visited {
 .cycling-popup .leaflet-popup-content-wrapper {
   border-left: 5px solid var(--color-brand--1);
 }
+
+.delete-all {
+  border: 1px solid #ff1c1c;
+  cursor: pointer;
+  padding: 1.5rem;
+  border-radius: 10px;
+
+  background: none;
+  color: #fff;
+
+  transition: all 0.3s;
+}
+
+.delete-all:hover,
+.delete-all:active {
+  background-color: #ff1c1c;
+}
+
+.hidden-btn {
+  display: none;
+}

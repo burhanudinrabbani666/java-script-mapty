@@ -12,6 +12,8 @@ const inputDuration = document.querySelector('.form__input--duration');
 const inputCadence = document.querySelector('.form__input--cadence');
 const inputElevation = document.querySelector('.form__input--elevation');
 
+const deleteAllBtn = document.querySelector('.delete-all');
+
 class App {
   // Private Class Fields
   #map;
@@ -49,7 +51,19 @@ class App {
       }
     });
 
-    console.log(bani);
+    // btn delete all
+    this._deleteAllBtn();
+    deleteAllBtn.addEventListener('click', this.reset);
+  }
+
+  _deleteAllBtn() {
+    if (this.#workout.length === 0) {
+      deleteAllBtn.classList.add('hidden-btn');
+
+      return;
+    }
+
+    deleteAllBtn.classList.remove('hidden-btn');
   }
 
   _editWorkout(event) {
@@ -142,10 +156,15 @@ class App {
   _showForm(mapE) {
     this.#mapEvent = mapE;
     this.#idEdit = '';
-    console.log(this.#idEdit);
 
     form.classList.remove('hidden');
     inputDistance.focus();
+
+    inputDistance.value =
+      inputDuration.value =
+      inputCadence.value =
+      inputElevation.value =
+        '';
   }
 
   _hideForm() {
@@ -228,6 +247,9 @@ class App {
 
       // Set Local Storage to all Workouts
       this._setLocalStorage();
+
+      // get delete all btn
+      this._deleteAllBtn();
     }
 
     if (id) {
@@ -423,6 +445,9 @@ class App {
   }
 
   reset() {
+    const data = JSON.parse(localStorage.getItem('workout'));
+    if (!data) return;
+
     localStorage.removeItem('workout');
     location.reload();
   }
